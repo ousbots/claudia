@@ -4,7 +4,7 @@ services:
     container_name: "claude"
     build:
       context: "./"
-    pull_policy: "build"
+    # pull_policy: "build"
     volumes:
       - "~/.claude:/home/timo/.claude:rw"
       - "~/.claude.json:/home/timo/.claude.json:rw"

@@ -7,13 +7,12 @@ ARG UID=1000
 ARG GID=1000
 ARG USER_NAME="timo"
 
-ARG CLAUDE_CODE_VERSION="latest"
-
 # Install basic development tools.
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade && apt-get install -y --no-install-recommends \
   aggregate \
   bat \
   build-essential \
+  curl \
   dnsutils \
   eza \
   fish \
@@ -22,20 +21,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   git \
   gnupg2 \
   hx \
+  imagemagick \
   iproute2 \
   ipset \
   iptables \
   jq \
   less \
+  librust-alsa-sys-dev \
+  librust-libudev-sys-dev \
+  librust-wayland-client-dev \
   man-db \
   nodejs \
   npm \
   pkg-config \
   procps \
+  ripgrep \
   rustup \
   starship \
+  swiftlang \
   sudo \
-  unzip
+  unzip \
+  wget
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Add a non-root user.
@@ -69,7 +75,15 @@ ENV SHELL=/bin/fish
 ENV EDITOR=hx
 ENV VISUAL=hx
 
+# Set local timezone
+ENV TZ=America/Denver
+
+# Disable auto-updating due to regression in 2.7.x series
+# ENV CLAUDE_CODE_DISABLE_AUTO_UPDATE=1
+# ENV DISABLE_AUTOUPDATER=1
+
 # Install Claude.
-RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+RUN curl -fsSL https://claude.ai/install.sh | bash
+ENV PATH=$PATH:/home/$USER_NAME/.local/bin
 
 ENTRYPOINT ["claude"]
