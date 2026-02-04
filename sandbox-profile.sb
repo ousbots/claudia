@@ -67,7 +67,7 @@
 ; Allow reading and writing claude configuration.
 (allow file-read* file-write*
 	(subpath (string-append (param "HOME") "/.claude"))
-	(literal (string-append (param "HOME") "/.claude.json"))
+	(regex (string-append "^" (regex-quote (param "HOME")) "/\\.claude\\.json.*"))
 )
 
 ; Allow reading and writing the working directory.
