@@ -1,0 +1,74 @@
+(version 1)
+
+(deny default)
+
+; Allow process execution and various system calls.
+(allow file-ioctl (subpath "/dev"))
+(allow file-ioctl (subpath "/dev"))
+(allow ipc-posix*)
+(allow ipc-sysv*)
+(allow mach-lookup)
+(allow mach-register)
+(allow network*)
+(allow process-exec)
+(allow process-fork)
+(allow signal)
+(allow sysctl-read)
+(allow system-socket)
+
+; Allow reading the root directory data for process initialization.
+(allow file-read-data
+	(literal "/")
+)
+
+; Allow reading the directory metadata for process initialization.
+(allow file-read-metadata
+	(literal "/Users")
+	(literal (param "HOME"))
+	(literal (string-append (param "HOME") "/work"))
+	(literal "/etc")
+	(literal "/var")
+	(literal "/private/var/run")
+)
+
+; Allow reading user preferences (needed for network/DNS configuration).
+(allow user-preference-read)
+
+; Allow reading system libraries.
+(allow file-read*
+    (subpath "/dev")
+    (subpath "/bin")
+	(subpath "/nix")
+    (subpath "/private/var/db/dyld")
+	(subpath "/private/var/run/current-system")
+	(literal "/private/var/run/mDNSResponder")
+    (subpath "/private/etc")
+	(subpath "/run")
+    (subpath "/usr/bin")
+	(subpath "/usr/lib")
+    (subpath "/usr/share")
+    (subpath "/Library")
+    (subpath "/System")
+	(subpath (string-append (param "HOME") "/Library/Keychains"))
+	(literal (string-append (param "HOME") "/.nix-profile"))
+)
+
+; Allow writing to dev and temp directories.
+(allow file-read* file-write*
+	(subpath "/dev")
+	(subpath "/private/tmp")
+	(subpath "/private/var/folders")
+	(subpath "/tmp")
+)
+
+; Allow DNS socket connections.
+(allow network-outbound (remote unix-socket))
+
+; Allow reading and writing claude configuration.
+(allow file-read* file-write*
+	(subpath (string-append (param "HOME") "/.claude"))
+	(literal (string-append (param "HOME") "/.claude.json"))
+)
+
+; Allow reading and writing the working directory.
+(allow file-read* file-write* (subpath (param "WORK_DIR")))
